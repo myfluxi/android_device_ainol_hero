@@ -14,7 +14,7 @@
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
-DEVICE_PACKAGE_OVERLAYS := device/ainol/elf2/overlay
+DEVICE_PACKAGE_OVERLAYS := device/ainol/hero/overlay
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
@@ -24,14 +24,17 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/ramdisk/init:root/init \
     $(LOCAL_PATH)/ramdisk/ueventd.rc:root/ueventd.rc
 
-# Prebuilt boot animation & PPP Widget
+# Prebuilt boot animation
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilt/bootanimation.zip:system/media/bootanimation.zip
 
 # init.d scripts
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/init.d/01cpu:system/etc/init.d/01cpu \
     $(LOCAL_PATH)/init.d/02modules:system/etc/init.d/02modules \
     $(LOCAL_PATH)/init.d/03kernel:system/etc/init.d/03kernel \
+    $(LOCAL_PATH)/init.d/04btaddr:system/etc/init.d/04btaddr \
+    $(LOCAL_PATH)/init.d/05usbaudio:system/etc/init.d/05usbaudiol \
     $(LOCAL_PATH)/init.d/06fixpermissions:system/etc/init.d/06fixpermissions \
     $(LOCAL_PATH)/init.d/10devlistener:system/etc/init.d/10devlistener \
     $(LOCAL_PATH)/init.d/11link2sd:system/etc/init.d/11link2sd
@@ -57,17 +60,18 @@ PRODUCT_COPY_FILES += \
 
 # USB ModeSwitch
 PRODUCT_COPY_FILES += \
-	$(call find-copy-subdir-files,*,device/ainol/elf2/configs/usb_modeswitch.d,system/etc/usb_modeswitch.d)
+	$(call find-copy-subdir-files,*,device/ainol/hero/configs/usb_modeswitch.d,system/etc/usb_modeswitch.d)
 
 # Prebuilt kernel modules
 PRODUCT_COPY_FILES += \
-	$(call find-copy-subdir-files,*,device/ainol/elf2/modules,system/lib/modules)
+	$(call find-copy-subdir-files,*,device/ainol/hero/modules,system/lib/modules)
 
 # Prebuilt proprietary stuff
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/proprietary/wifi-config/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
     $(LOCAL_PATH)/proprietary/android_I2C_Calibrate_V1_0:system/bin/android_I2C_Calibrate_V1_0 \
     $(LOCAL_PATH)/proprietary/gralloc.default.so:system/lib/hw/gralloc.default.so \
+    $(LOCAL_PATH)/proprietary/sensors.amlogic.so:system/lib/hw/sensors.amlogic.so \
     $(LOCAL_PATH)/proprietary/battery/0.rot270.bmp:system/resource/battery_pic/0.bmp \
     $(LOCAL_PATH)/proprietary/battery/1.rot270.bmp:system/resource/battery_pic/1.bmp \
     $(LOCAL_PATH)/proprietary/battery/2.rot270.bmp:system/resource/battery_pic/2.bmp \
@@ -80,6 +84,8 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/proprietary/vold/ntfs-3g:system/bin/ntfs-3g \
     $(LOCAL_PATH)/proprietary/vold/ntfs-3g.probe:system/bin/ntfs-3g.probe \
     $(LOCAL_PATH)/proprietary/vold/mkntfs:system/bin/mkntfs \
+    $(LOCAL_PATH)/proprietary/bluetooth/hciattach_amp:system/bin/hciattach_amp \
+    $(LOCAL_PATH)/proprietary/bluetooth/BCM40183B2_26M.hcd:system/etc/bluetooth/BCM40183B2_26M.hcd \
     $(LOCAL_PATH)/proprietary/fbset:system/xbin/fbset
 
 PRODUCT_COPY_FILES += \
@@ -99,13 +105,13 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
     packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:system/etc/permissions/android.software.live_wallpaper.xml
 
-DEVICE_PACKAGE_OVERLAYS := device/ainol/elf2/overlay
+DEVICE_PACKAGE_OVERLAYS := device/ainol/hero/overlay
 
 # AML HAL
 PRODUCT_PACKAGES += \
     camera.amlogic.so \
     hwcomposer.amlogic \
-    sensors.amlogic \
+    sensors.amlogic.so \
     lights.amlogic \
     power.amlogic
 
@@ -114,18 +120,15 @@ PRODUCT_PACKAGES += \
     libEGL_mali.so \
     libGLESv1_CM_mali.so \
     libGLESv2_mali.so \
-    libGLESv2_mali.so \
     libMali.so \
     libUMP.so
 
 # AML WiFi
 PRODUCT_PACKAGES += \
-    40181/nvram.txt \
-    40181/fw_bcm40181a0.bin \
-    40181/fw_bcm40181a0_apsta.bin \
-    40181/fw_bcm40181a2.bin \
-    40181/fw_bcm40181a2_apsta.bin \
-    40181/fw_bcm40181a2_p2p.bin \
+    40183/nvram.txt \
+    40183/fw_bcm40183b2.bin \
+    40183/fw_bcm40183b2_apsta.bin \
+    40183/fw_bcm40183b2_p2p.bin \
     wl \
     dhd
 
@@ -221,10 +224,10 @@ PRODUCT_CHARACTERISTICS := tablet
 
 PRODUCT_TAGS += dalvik.gc.type-precise
 
-TARGET_BOOTANIMATION_NAME := horizontal-1024x600
+TARGET_BOOTANIMATION_NAME := horizontal-1280x800
 
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 
 $(call inherit-product, frameworks/native/build/tablet-7in-hdpi-1024-dalvik-heap.mk)
 $(call inherit-product, build/target/product/full_base.mk)
-$(call inherit-product-if-exists, vendor/ainol/elf2/elf2-vendor.mk)
+$(call inherit-product-if-exists, vendor/ainol/hero/hero-vendor.mk)

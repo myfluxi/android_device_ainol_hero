@@ -2,7 +2,6 @@
 #
 
 # network
-insmod /system/lib/modules/tun.ko
 insmod /system/lib/modules/tcp_veno.ko
 echo veno > /proc/sys/net/ipv4/tcp_congestion_control
 
@@ -18,4 +17,5 @@ insmod /system/lib/modules/hid-sony.ko
 
 # misc
 insmod /system/lib/modules/uinput.ko
+insmod /system/lib/modules/cifs.ko
 

@@ -468,6 +468,13 @@ on boot
     chmod 0664 /sys/class/video2/screen_mode
     chmod 0664 /sys/class/video2/zoom
 
+    chown system system /sys/class/graphics/fb2/blank
+    chown system system /sys/class/graphics/fb2/clone
+    chown system system /sys/class/display2/venc_mux
+    chmod 0664 /sys/class/graphics/fb2/blank
+    chmod 0664 /sys/class/graphics/fb2/clone
+    chmod 0664 /sys/class/display2/venc_mux
+
     # 3G dongle
     chmod 0666 /dev/ttyS20
     chmod 0777 /system/etc/init-pppd.sh
@@ -533,10 +540,11 @@ on boot
     chmod 0666 /dev/timerirq
 
     # Bluetooth
-    chmod 0777 /system/bin/hciattach_usi
+    chmod 0555 /system/bin/hciattach_amp
     chown system system /sys/class/rfkill/rfkill0/state
-    chmod 0664 /sys/class/rfkill/rfkill0/state
+    chmod 0666 /sys/class/rfkill/rfkill0/state
     write /sys/class/rfkill/rfkill0/state 0
+    chmod 0666 /etc/bluetooth/mac_addr.txt
 
     # Bluetooth MAC address programming
     chown bluetooth bluetooth /sys/class/efuse/mac_bt
@@ -681,18 +689,18 @@ on property:persist.sys.usb.config=*
 # turn off modules when system booted up
 # set the modules witch are needed to be controled dynamically for power saveing
 on property:init.svc.bootanim=stopped
-    write /sys/class/aml_mod/mod_off audio
+    #write /sys/class/aml_mod/mod_off audio
     write /sys/class/aml_mod/mod_off mipi
     write /sys/class/aml_mod/mod_off spi
-    write /sys/class/aml_mod/mod_off uart0
-    write /sys/class/aml_mod/mod_off uart1
-    write /sys/class/aml_mod/mod_off uart2
-    write /sys/class/aml_mod/mod_off uart3
+    #write /sys/class/aml_mod/mod_off uart0
+    #write /sys/class/aml_mod/mod_off uart1
+    #write /sys/class/aml_mod/mod_off uart2
+    #write /sys/class/aml_mod/mod_off uart3
     write /sys/class/aml_mod/mod_off venc
     write /sys/class/aml_mod/mod_off bt656
     write /sys/class/aml_mod/mod_off vdec
-    write /sys/class/aml_mod/mod_off rom
-    write /sys/class/aml_mod/mod_off efuse
+    #write /sys/class/aml_mod/mod_off rom
+    #write /sys/class/aml_mod/mod_off efuse
     write /sys/class/aml_mod/mod_off random_num_gen
     write /sys/class/aml_mod/mod_off tcon
     write /sys/class/aml_mod/mod_off ethernet
@@ -707,7 +715,7 @@ on property:init.svc.bootanim=stopped
     write /sys/class/aml_mod/mod_off ge2d
     #write /sys/class/aml_mod/mod_off vdin
     
-    write /sys/class/aml_mod/dynamical_control audio
+    #write /sys/class/aml_mod/dynamical_control audio
     write /sys/class/aml_mod/dynamical_control vdec
     write /sys/class/aml_mod/dynamical_control bt656
     write /sys/class/aml_mod/dynamical_control lvds
@@ -898,7 +906,14 @@ service mdnsd /system/bin/mdnsd
     disabled
     oneshot
 
-service wpa_supplicant /system/bin/wpa_supplicant -Dwext -iwlan0 -c /data/misc/wifi/wpa_supplicant.conf
+service wpa_supplicant /system/bin/wpa_supplicant -Dnl80211 -iwlan0 -c /data/misc/wifi/wpa_supplicant.conf
+    class main
+    socket wpa_wlan0 dgram 0660 wifi wifi
+    group system wifi inet
+    disabled
+    oneshot
+
+service p2p_supplicant /system/bin/wpa_supplicant -Dnl80211 -iwlan0 -c /data/misc/wifi/wpa_supplicant.conf
     class main
     socket wpa_wlan0 dgram 0660 wifi wifi
     group system wifi inet
@@ -910,19 +925,42 @@ service hostapd /system/bin/hostapd_wps /data/misc/wifi/hostapd.conf
 	disabled
 	oneshot
 
-service dhcpcd_wlan0 /system/bin/dhcpcd -d -f /system/etc/dhcpcd/dhcpcd.conf -B
+service dhcpcd_wlan0 /system/bin/dhcpcd -aABKL
     class main
-    group dhcp system
     disabled
-    oneshot
-
-service dhcpcd_usbnet0 /system/bin/dhcpcd -d -f /system/etc/dhcpcd/dhcpcd.conf -B
-    class main
-    group dhcp system
-    disabled
-    oneshot
+    oneshot    
 
 service iprenew_wlan0 /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
+service dhcpcd_p2p /system/bin/dhcpcd -aABKL
+    class main
+    disabled
+    oneshot
+
+service iprenew_p2p /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
+service dhcpcd_eth0 /system/bin/dhcpcd -aABKL
+    class main
+    disabled
+    oneshot    
+
+service iprenew_eth0 /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
+service dhcpcd_usbnet0 /system/bin/dhcpcd -aABKL
+    class main
+    disabled
+    oneshot    
+
+service iprenew_usbnet0 /system/bin/dhcpcd -n
     class main
     disabled
     oneshot
@@ -934,6 +972,18 @@ service audio /system/bin/alsa_ctl restore
 
 service usbpm /system/bin/usbtestpm_mx_iddq
     disabled
+
+service hciattach /system/bin/hciattach_amp \
+    -n -s 115200 -f /etc/bluetooth/BCM40183B2_26M.hcd -m /data/misc/bt_addr.conf /dev/ttyS1 bcmbt 2000000 flow
+    user bluetooth
+    group bluetooth net_bt_admin
+    oneshot
+    disabled
+
+#service bt_addr /system/bin/bt_addr.sh
+#    class main
+#    group root root
+#    oneshot
 
 # do wififix
 service wififix /system/bin/wififix.sh

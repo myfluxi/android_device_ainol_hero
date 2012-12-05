@@ -19,23 +19,23 @@ case $1 in
     ;;
 
     panel)
-        fbset -fb /dev/graphics/fb0 -g 1024 600 1024 1200 32
+        fbset -fb /dev/graphics/fb0 -g 1280 800 1280 1600 32
         fbset -fb /dev/graphics/fb1 -g 32 32 32 32 32
         echo $1 > /sys/class/display/mode
-        echo 0 0 1024 600 0 0 32 32 > /sys/class/display/axis
+        echo 0 0 1280 800 0 0 32 32 > /sys/class/display/axis
     ;;
     
     mode_set_before)
-        fbset -fb /dev/graphics/fb0 -g 1024 600 1024 1200 32
+        fbset -fb /dev/graphics/fb0 -g 1280 800 1280 1600 32
         fbset -fb /dev/graphics/fb1 -g 32 32 32 32 32
-        echo 0 0 1024 600 0 0 32 32 > /sys/class/display/axis
+        echo 0 0 1280 800 0 0 32 32 > /sys/class/display/axis
     ;;
     
     *)
         echo "Error: Un-supported display mode $1"
         echo "       Default to panel"
-        fbset -fb /dev/graphics/fb0 -g 1024 600 1024 1200 32
+        fbset -fb /dev/graphics/fb0 -g 1280 800 1280 1600 32
         fbset -fb /dev/graphics/fb1 -g 32 32 32 32 32
         echo $1 > /sys/class/display/mode
-        echo 0 0 1024 600 0 0 32 32 > /sys/class/display/axis
+        echo 0 0 1280 800 0 0 32 32 > /sys/class/display/axis
 esac
