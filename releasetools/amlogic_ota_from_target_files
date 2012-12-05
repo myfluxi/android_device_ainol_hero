@@ -99,7 +99,7 @@ OPTIONS.omit_prereq = False
 OPTIONS.extra_script = None
 OPTIONS.aslr_mode = True
 OPTIONS.worker_threads = 3
-OPTIONS.backuptool = False
+OPTIONS.backuptool = True
 OPTIONS.modelidcfg = True
 OPTIONS.override_device = 'auto'
 
@@ -418,8 +418,8 @@ def WriteFullOTAPackage(input_zip, output_zip):
   symlinks = CopySystemFiles(input_zip, output_zip)
   script.MakeSymlinks(symlinks)
 
-  #boot_img = common.GetBootableImage("boot.img", "boot.img",
-  #                                   OPTIONS.input_tmp, "BOOT")
+  boot_img = common.GetBootableImage("boot.img", "boot.img",
+                                      OPTIONS.input_tmp, "BOOT")
   #recovery_img = common.GetBootableImage("recovery.img", "recovery.img",
   #                                       OPTIONS.input_tmp, "RECOVERY")
   #MakeRecoveryPatch(output_zip, recovery_img, boot_img)
@@ -430,8 +430,8 @@ def WriteFullOTAPackage(input_zip, output_zip):
   script.SetPermissions("/system/bin/mtpd", 0, 2000, 06755)
   script.DeleteFiles(["/system/app/CMUpdater.apk"])
 
-  #common.CheckSize(boot_img.data, "boot.img", OPTIONS.info_dict)
-  #common.ZipWriteStr(output_zip, "boot.img", boot_img.data)
+  common.CheckSize(boot_img.data, "boot.img", OPTIONS.info_dict)
+  common.ZipWriteStr(output_zip, "boot.img", boot_img.data)
   script.ShowProgress(0.2, 0)
 
   if OPTIONS.backuptool:
@@ -441,8 +441,8 @@ def WriteFullOTAPackage(input_zip, output_zip):
   if OPTIONS.modelidcfg:
     script.RunConfig("")
 
-  #script.ShowProgress(0.2, 10)
-  #script.WriteRawImage("/boot", "boot.img")
+  script.ShowProgress(0.2, 10)
+  script.WriteRawImage("/boot", "boot.img")
 
   script.ShowProgress(0.1, 0)
   device_specific.FullOTA_InstallEnd()
