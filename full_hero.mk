@@ -22,7 +22,8 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/ramdisk/ump.ko:root/boot/ump.ko \
     $(LOCAL_PATH)/ramdisk/init.rc:root/init.rc \
     $(LOCAL_PATH)/ramdisk/init:root/init \
-    $(LOCAL_PATH)/ramdisk/ueventd.rc:root/ueventd.rc
+    $(LOCAL_PATH)/ramdisk/ueventd.rc:root/ueventd.rc \
+    $(LOCAL_PATH)/ramdisk/initlogo.rle.bak:root/initlogo.rle.bak
 
 # Prebuilt boot animation
 PRODUCT_COPY_FILES += \
