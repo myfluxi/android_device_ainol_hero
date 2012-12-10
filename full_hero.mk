@@ -25,9 +25,10 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/ramdisk/ueventd.rc:root/ueventd.rc \
     $(LOCAL_PATH)/ramdisk/initlogo.rle.bak:root/initlogo.rle.bak
 
-# Prebuilt boot animation
+# Prebuilts
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilt/bootanimation.zip:system/media/bootanimation.zip
+    $(LOCAL_PATH)/prebuilt/bootanimation.zip:system/media/bootanimation.zip \
+    $(LOCAL_PATH)/prebuilt/PPPWidget.apk:system/app/PPPWidget.apk
 
 # init.d scripts
 PRODUCT_COPY_FILES += \
